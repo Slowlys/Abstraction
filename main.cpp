@@ -10,7 +10,7 @@ using namespace cv;
 
 
 
-Mat calculate_difference (const Mat &image_a, const Mat &image_b) {
+Mat_<ushort> calculate_difference (const Mat &image_a, const Mat &image_b) {
     // Absolute Difference
     Mat difference;
     absdiff(image_a, image_b, difference);
@@ -30,20 +30,20 @@ Mat calculate_difference (const Mat &image_a, const Mat &image_b) {
  * horizontal_difference : At (i, j) : the difference between (i, j) and (i+1, j)
  * vertical_difference : At (i, j) : the difference between (i, j) and (i, j+1)
  */
-void calculate_horizontalVertical_difference (const Mat &image, Mat &horizontal_difference, Mat &vertical_difference) {
-    const Mat image_withoutLastRow = image(Range{0, image.rows - 2}, Range::all());
-    const Mat image_withoutFirstRow = image(Range{1, image.rows - 1}, Range::all());
+void calculate_horizontalVertical_difference (const Mat &image, Mat_<ushort> &horizontal_difference, Mat_<ushort> &vertical_difference) {
+    const Mat image_withoutLastRow = image(Range{0, image.rows - 1}, Range::all());
+    const Mat image_withoutFirstRow = image(Range{1, image.rows}, Range::all());
     horizontal_difference = calculate_difference(image_withoutLastRow, image_withoutFirstRow);
 
-    const Mat image_withoutLastColumn = image(Range::all(), Range{0, image.cols - 2});
-    const Mat image_withoutFirstColumn = image(Range::all(), Range{1, image.cols - 1});
+    const Mat image_withoutLastColumn = image(Range::all(), Range{0, image.cols - 1});
+    const Mat image_withoutFirstColumn = image(Range::all(), Range{1, image.cols});
     vertical_difference = calculate_difference(image_withoutLastColumn, image_withoutFirstColumn);
 }
 
 
-void display_difference(const Mat &horizontal_difference, const Mat &vertical_difference, const char *display_name) {
-    const Mat horizontal_difference_resized = horizontal_difference(Range::all(), Range{0, horizontal_difference.cols - 2});
-    const Mat vertical_difference_resized = vertical_difference(Range{0, vertical_difference.rows - 2}, Range::all());
+void display_difference(const Mat_<ushort> &horizontal_difference, const Mat_<ushort> &vertical_difference, const char *display_name) {
+    const Mat horizontal_difference_resized = horizontal_difference(Range::all(), Range{0, horizontal_difference.cols - 1});
+    const Mat vertical_difference_resized = vertical_difference(Range{0, vertical_difference.rows - 1}, Range::all());
     const Mat difference = horizontal_difference_resized + vertical_difference_resized;
 
     Mat difference_char;
@@ -57,51 +57,53 @@ void display_difference(const Mat &horizontal_difference, const Mat &vertical_di
 
 
 // Put the neighbors of the original pixel into the queue
-void select_originalNeighBors(const Mat_<Vec3b> &image, const Vec3b &pixelOrigin, int row, int column, const float gamma,
+void select_originalNeighBors(const Mat_<Vec3b> &image,
+                              const Mat_<ushort> &horizontal_difference, const Mat_<ushort> &vertical_difference,
+                              int row, int column,
                               std::unordered_set<int> &selectedIndices, Pixel::PriorityPixels &possiblePixels) {
     selectedIndices.insert(row * image.cols + column);
 
     if (row > 0) {
         const Point coordinate{column, row - 1};
-        const auto distance = Pixel::distanceBetween(image(coordinate), pixelOrigin);
-        possiblePixels.emplace(gamma, coordinate, distance);
+        possiblePixels.emplace(coordinate, horizontal_difference(row - 1, column));
     }
 
     if (row < image.rows - 1) {
         const Point coordinate{column, row + 1};
-        const auto distance = Pixel::distanceBetween(image(coordinate), pixelOrigin);
-        possiblePixels.emplace(gamma, coordinate, distance);
+        possiblePixels.emplace(coordinate, horizontal_difference(row, column));
     }
 
     if (column > 0) {
         const Point coordinate{column - 1, row};
-        const auto distance = Pixel::distanceBetween(image(coordinate), pixelOrigin);
-        possiblePixels.emplace(gamma, coordinate, distance);
+        possiblePixels.emplace(coordinate, vertical_difference(row, column - 1));
     }
 
     if (column < image.cols - 1) {
         const Point coordinate{column + 1, row};
-        const auto distance = Pixel::distanceBetween(image(coordinate), pixelOrigin);
-        possiblePixels.emplace(gamma, coordinate, distance);
+        possiblePixels.emplace(coordinate, vertical_difference(row, column));
     }
 }
 
 
-Vec3b abstractPixel (uint maskSize, const float gamma, const Mat_<Vec3b> &image, int row, int column) {
+Vec3b abstractPixel (uint maskSize, const Mat_<Vec3b> &image,
+                     const Mat_<ushort> &horizontal_difference, const Mat_<ushort> &vertical_difference,
+                     const Mat_<float> &horizontal_difference_scaled, const Mat_<float> &vertical_difference_scaled,
+                     int row, int column) {
     std::unordered_set<int> selectedIndices;
     Pixel::PriorityPixels possiblePixels;
 
     const Vec3b &pixelOrigin = image(row, column);
     Vec3f abstractedPixel = pixelOrigin;
 
-    select_originalNeighBors(image, pixelOrigin, row, column, gamma, selectedIndices, possiblePixels);
+    select_originalNeighBors(image, horizontal_difference, vertical_difference, row, column, selectedIndices, possiblePixels);
 
     for (uint i = 1; i < maskSize; ++i) {
         bool newPixelAdded = false;
         do {
             const Pixel closestPixel = possiblePixels.top();
             possiblePixels.pop();
-            newPixelAdded = closestPixel.select(abstractedPixel, image, pixelOrigin, selectedIndices, possiblePixels);
+            newPixelAdded = closestPixel.select(abstractedPixel, image, pixelOrigin, horizontal_difference_scaled, vertical_difference_scaled,
+                                                selectedIndices, possiblePixels);
         } while (!newPixelAdded);
     }
 
@@ -110,11 +112,11 @@ Vec3b abstractPixel (uint maskSize, const float gamma, const Mat_<Vec3b> &image,
 
 
 int main() {
-    const char *image_path = "../images/herisson.jpg";
+    const char *image_path = "../images/lena.jpg";
     const char *window_name = "Abstraction";
     const char *output_path = "result.png";
-    const uint maskSize = 300;
-    const float gamma = 1.0f;
+    const uint maskSize = 100;
+    const double gamma = 1.0;
 
     Mat image = imread( image_path, IMREAD_UNCHANGED );
     if ( image.empty() ) {
@@ -152,17 +154,23 @@ int main() {
             image_hot.convertTo(image_hotChar, CV_8U);
 
             // Let's begin
-            Mat horizontal_difference, vertical_difference;
+            double time = static_cast<double>(getTickCount());
+
+            Mat_<ushort> horizontal_difference, vertical_difference;
             calculate_horizontalVertical_difference (image, horizontal_difference, vertical_difference);
 
-            double time = static_cast<double>(getTickCount());
+            Mat_<float> horizontal_difference_scaled, vertical_difference_scaled;
+            horizontal_difference.convertTo(horizontal_difference_scaled, CV_32F, gamma);
+            vertical_difference.convertTo(vertical_difference_scaled, CV_32F, gamma);
 
             //Mat_<Vec3b> abstracted_image{image.size(), CV_8U};
             Mat_<Vec3b> abstracted_image = image.clone();
 
             for (int row = 0; row < image3d.rows; ++row) {
                 for (int column = 0; column < image3d.cols; ++column) {
-                    abstracted_image(row, column) = abstractPixel(maskSize, gamma, image3d, row, column);
+                    abstracted_image(row, column) = abstractPixel(maskSize, image3d, horizontal_difference, vertical_difference,
+                                                                  horizontal_difference_scaled, vertical_difference_scaled,
+                                                                  row, column);
                 }
 
                 imshow(window_name, abstracted_image);
@@ -171,9 +179,9 @@ int main() {
 
             time = static_cast<double>(getTickCount()) - time;
             const double time_seconds = time / getTickFrequency();
-            std::cout << "Number of Ticks : " << time << " Seconds : " << time_seconds << std::endl;
+            std::cout << "Seconds : " << time_seconds << std::endl;
 
-            Mat abstract_horizontal_difference, abstract_vertical_difference;
+            Mat_<ushort> abstract_horizontal_difference, abstract_vertical_difference;
             calculate_horizontalVertical_difference (abstracted_image, abstract_horizontal_difference, abstract_vertical_difference);
 
             imshow(window_name, abstracted_image);

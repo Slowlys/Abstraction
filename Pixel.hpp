@@ -17,29 +17,28 @@ private:
 public:
     using PriorityPixels = std::priority_queue<const Pixel&, std::vector<Pixel>, CloserThanPixel>;
 
-    Pixel(float gamma, const cv::Point coordinate, float distanceFromOrigin);
+    Pixel(const cv::Point coordinate, float distanceFromOrigin);
 
     bool operator>(const Pixel &pixel) const;
 
     static float distanceBetween(const cv::Vec3b &pixelA, const cv::Vec3b &pixelB);
 
     bool select(cv::Vec3f &abstractedPixel, const cv::Mat_<cv::Vec3b> &image, const cv::Vec3b &pixelOrigin,
+                const cv::Mat_<float> &horizontal_difference_scaled, const cv::Mat_<float> &vertical_difference_scaled,
                 std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;
 
 private:
     /* Attributes */
-    // TODO : static
-    float gamma;
-
     cv::Point coordinate;
     float distanceFromOrigin;
 
     /* Functions */
 
     void add_neighborsToPossiblePixels (const cv::Mat_<cv::Vec3b> &image, const cv::Vec3b &pixelOrigin,
+                                        const cv::Mat_<float> &horizontal_difference_scaled, const cv::Mat_<float> &vertical_difference_scaled,
                                         const std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;
 
-    float propagationDistance(const cv::Mat_<cv::Vec3b> &image, const cv::Vec3b &pixelOrigin, const cv::Vec3b &pixelValue, const cv::Point &neighbor) const;
+    float propagationDistance(const cv::Mat_<cv::Vec3b> &image, const cv::Vec3b &pixelOrigin, const cv::Point &neighbor, float neightbor_distance) const;
 };
 
 
