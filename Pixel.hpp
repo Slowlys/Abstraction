@@ -21,7 +21,7 @@ public:
 
     bool operator>(const Pixel &pixel) const;
 
-    static int distanceBetween(const cv::Vec3b &pixelA, const cv::Vec3b &pixelB);
+    static float distanceBetween(const cv::Vec3b &pixelA, const cv::Vec3b &pixelB);
 
     bool select(cv::Vec3f &abstractedPixel, const cv::Mat_<cv::Vec3b> &image, const cv::Vec3b &pixelOrigin,
                 std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;

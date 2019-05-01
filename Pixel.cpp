@@ -18,10 +18,9 @@ bool Pixel::operator>(const Pixel& pixel) const {
 }
 
 
-int Pixel::distanceBetween(const Vec3b &pixelA, const Vec3b &pixelB) {
-    const Vec3b absolute_difference;
-    absdiff(pixelA, pixelB, absolute_difference);
-    return absolute_difference[0] + absolute_difference[1] + absolute_difference[2];
+float Pixel::distanceBetween(const Vec3b &pixelA, const Vec3b &pixelB) {
+    const auto distance = norm(pixelA, pixelB, NORM_L1);
+    return static_cast<float>(distance);
 }
 
 
