@@ -50,6 +50,49 @@ Mat_<ushort> Abstractor::calculate_difference (const Mat &image_a, const Mat &im
 
 /*-------------------------------- Abstraction ------------------------------------------------*/
 
+
+Mat_<Vec3b> Abstractor::abstract(uint maskSize, double gamma) {
+    //Mat_<Vec3b> abstracted_image{image.size(), CV_8U};
+    Mat_<Vec3b> abstracted_image = image->clone();
+
+    horizontal_difference.convertTo(horizontal_difference_scaled, CV_32F, gamma);
+    vertical_difference.convertTo(vertical_difference_scaled, CV_32F, gamma);
+
+    for (int row = 0; row < image->rows; ++row) {
+        for (int column = 0; column < image->cols; ++column) {
+            abstracted_image(row, column) = abstractPixel(maskSize, row, column);
+        }
+
+        imshow("Abstraction", abstracted_image);
+        waitKey(1);
+    }
+
+    return abstracted_image;
+}
+
+
+Vec3b Abstractor::abstractPixel (uint maskSize, int row, int column) const {
+    unordered_set<int> selectedIndices;
+    PriorityPixels possiblePixels;
+
+    const Vec3b &pixelOrigin = (*image)(row, column);
+    Vec3f abstractedPixel = pixelOrigin;
+
+    select_originalNeighBors(row, column, selectedIndices, possiblePixels);
+
+    for (uint i = 1; i < maskSize; ++i) {
+        bool newPixelAdded = false;
+        do {
+            const Pixel closestPixel = possiblePixels.extractMin();
+            newPixelAdded = select(abstractedPixel, pixelOrigin, closestPixel,
+                                   selectedIndices, possiblePixels);
+        } while (!newPixelAdded);
+    }
+
+    return abstractedPixel / static_cast<float>(maskSize);
+}
+
+
 // Put the neighbors of the original pixel into the queue
 void Abstractor::select_originalNeighBors(int row, int column,
                               unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const {
@@ -74,49 +117,6 @@ void Abstractor::select_originalNeighBors(int row, int column,
         const Point coordinate{column + 1, row};
         possiblePixels.emplace(coordinate, vertical_difference(row, column));
     }
-}
-
-
-Vec3b Abstractor::abstractPixel (uint maskSize, int row, int column) const {
-    unordered_set<int> selectedIndices;
-    PriorityPixels possiblePixels;
-
-    const Vec3b &pixelOrigin = (*image)(row, column);
-    Vec3f abstractedPixel = pixelOrigin;
-
-    select_originalNeighBors(row, column, selectedIndices, possiblePixels);
-
-    for (uint i = 1; i < maskSize; ++i) {
-        bool newPixelAdded = false;
-        do {
-            const Pixel closestPixel = possiblePixels.top();
-            possiblePixels.pop();
-            newPixelAdded = select(abstractedPixel, pixelOrigin, closestPixel,
-                                   selectedIndices, possiblePixels);
-        } while (!newPixelAdded);
-    }
-
-    return abstractedPixel / static_cast<float>(maskSize);
-}
-
-
-Mat_<Vec3b> Abstractor::abstract(uint maskSize, double gamma) {
-    //Mat_<Vec3b> abstracted_image{image.size(), CV_8U};
-    Mat_<Vec3b> abstracted_image = image->clone();
-
-    horizontal_difference.convertTo(horizontal_difference_scaled, CV_32F, gamma);
-    vertical_difference.convertTo(vertical_difference_scaled, CV_32F, gamma);
-
-    for (int row = 0; row < image->rows; ++row) {
-        for (int column = 0; column < image->cols; ++column) {
-            abstracted_image(row, column) = abstractPixel(maskSize, row, column);
-        }
-
-        imshow("Abstraction", abstracted_image);
-        waitKey(1);
-    }
-
-    return abstracted_image;
 }
 
 /*-------------------------------- Select Pixel ------------------------------------------------*/
@@ -149,7 +149,7 @@ void Abstractor::add_neighborsToPossiblePixels (const Vec3b &pixelOrigin, const 
         const Point neighbor{column, row - 1};
         const float distance = propagationDistance(pixelOrigin, neighbor, distanceFromOrigin,
                                                    horizontal_difference_scaled(row - 1, column));
-        possiblePixels.emplace(neighbor, distance);
+        possiblePixels.emplace_nonEmpty(neighbor, distance);
     }
 
     index += 2 * image->cols;
@@ -157,7 +157,7 @@ void Abstractor::add_neighborsToPossiblePixels (const Vec3b &pixelOrigin, const 
         const Point neighbor{column, row + 1};
         const float distance = propagationDistance(pixelOrigin, neighbor, distanceFromOrigin,
                                                    horizontal_difference_scaled(row, column));
-        possiblePixels.emplace(neighbor, distance);
+        possiblePixels.emplace_nonEmpty(neighbor, distance);
     }
 
     index = index - image->cols - 1;
@@ -165,7 +165,7 @@ void Abstractor::add_neighborsToPossiblePixels (const Vec3b &pixelOrigin, const 
         const Point neighbor{column - 1, row};
         const float distance = propagationDistance(pixelOrigin, neighbor, distanceFromOrigin,
                                                    vertical_difference_scaled(row, column - 1));
-        possiblePixels.emplace(neighbor, distance);
+        possiblePixels.emplace_nonEmpty(neighbor, distance);
     }
 
     index += 2;
@@ -173,7 +173,7 @@ void Abstractor::add_neighborsToPossiblePixels (const Vec3b &pixelOrigin, const 
         const Point neighbor{column + 1, row};
         const float distance = propagationDistance(pixelOrigin, neighbor, distanceFromOrigin,
                                                    vertical_difference_scaled(row, column));
-        possiblePixels.emplace(neighbor, distance);
+        possiblePixels.emplace_nonEmpty(neighbor, distance);
     }
 }
 

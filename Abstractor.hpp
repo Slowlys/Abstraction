@@ -5,6 +5,8 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "PairingHeap.hpp"
+
 #include "Pixel.hpp"
 
 
@@ -19,7 +21,8 @@ private:
         }
     };
 public:
-    using PriorityPixels = std::priority_queue<const Pixel&, std::vector<Pixel>, CloserThanPixel>;
+    using PriorityPixels = PairingHeap;
+    //using PriorityPixels = std::priority_queue<Pixel&, std::vector<Pixel>, CloserThanPixel>;
 
     Abstractor();
 
@@ -44,13 +47,18 @@ private:
     /* Functions */
     /*---------------*/
 
-    cv::Vec3b abstractPixel (uint maskSize, int row, int column) const;
+    /* Init */
 
     void calculate_horizontalVertical_difference ();
-
     cv::Mat_<ushort> calculate_difference (const cv::Mat &image_a, const cv::Mat &image_b) const;
 
+    /* Abstraction */
+
+    cv::Vec3b abstractPixel (uint maskSize, int row, int column) const;
     void select_originalNeighBors(int row, int column, std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;
+
+
+    /* Select Pixel */
 
     bool select(cv::Vec3f &abstractedPixel, const cv::Vec3b &pixelOrigin, const Pixel &closestPixel,
                 std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;

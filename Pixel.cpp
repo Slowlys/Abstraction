@@ -5,7 +5,7 @@ using namespace cv;
 
 
 
-Pixel::Pixel(const Point coordinate, const float distanceFromOrigin) :
+Pixel::Pixel(const Point coordinate, float distanceFromOrigin) :
     coordinate{coordinate},
     distanceFromOrigin{distanceFromOrigin}
 {

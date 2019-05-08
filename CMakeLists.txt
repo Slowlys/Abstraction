@@ -11,6 +11,7 @@ include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 # Add Sources
 set(SOURCE_FILES
+    PairingHeap.hpp PairingHeap.cpp
     Pixel.hpp Pixel.cpp
     Abstractor.hpp Abstractor.cpp
     main.cpp
