@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "PairingHeap.hpp"
+#include "DoubledLinkedList.hpp"
 
 #include "Pixel.hpp"
 
@@ -21,7 +22,7 @@ private:
         }
     };
 public:
-    using PriorityPixels = PairingHeap;
+    using PriorityPixels = DoubledLinkedList;
     //using PriorityPixels = std::priority_queue<Pixel&, std::vector<Pixel>, CloserThanPixel>;
 
     Abstractor();
@@ -60,7 +61,7 @@ private:
 
     /* Select Pixel */
 
-    bool select(cv::Vec3f &abstractedPixel, const cv::Vec3b &pixelOrigin, const Pixel &closestPixel,
+    void select(cv::Vec3f &abstractedPixel, const cv::Vec3b &pixelOrigin, const Pixel &closestPixel,
                 std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;
 
     void add_neighborsToPossiblePixels (const cv::Vec3b &pixelOrigin, const Pixel &closestPixel,

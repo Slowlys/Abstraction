@@ -24,7 +24,7 @@ void display_difference(const Mat_<ushort> &horizontal_difference, const Mat_<us
 
 
 int main() {
-    const char *image_path = "../images/ntcu.jpg";
+    const char *image_path = "../images/lena.jpg";
     const char *window_name = "Abstraction";
     const char *output_path = "result.png";
     const uint maskSize = 100;

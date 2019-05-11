@@ -73,21 +73,21 @@ Mat_<Vec3b> Abstractor::abstract(uint maskSize, double gamma) {
 
 Vec3b Abstractor::abstractPixel (uint maskSize, int row, int column) const {
     unordered_set<int> selectedIndices;
-    PriorityPixels possiblePixels;
+    PriorityPixels possiblePixels{maskSize - 1};
 
     const Vec3b &pixelOrigin = (*image)(row, column);
     Vec3f abstractedPixel = pixelOrigin;
 
     select_originalNeighBors(row, column, selectedIndices, possiblePixels);
 
-    for (uint i = 1; i < maskSize; ++i) {
-        bool newPixelAdded = false;
-        do {
-            const Pixel closestPixel = possiblePixels.extractMin();
-            newPixelAdded = select(abstractedPixel, pixelOrigin, closestPixel,
-                                   selectedIndices, possiblePixels);
-        } while (!newPixelAdded);
+    for (uint i = 1; i < maskSize - 1; ++i) {
+        const Pixel closestPixel = possiblePixels.extractMin();
+        select(abstractedPixel, pixelOrigin, closestPixel, selectedIndices, possiblePixels);
     }
+
+    // Add last pixel
+    const Pixel closestPixel = possiblePixels.extractMin();
+    abstractedPixel += (*image)(closestPixel.getCoordinate());
 
     return abstractedPixel / static_cast<float>(maskSize);
 }
@@ -121,19 +121,14 @@ void Abstractor::select_originalNeighBors(int row, int column,
 
 /*-------------------------------- Select Pixel ------------------------------------------------*/
 
-bool Abstractor::select(Vec3f &abstractedPixel, const Vec3b &pixelOrigin, const Pixel &closestPixel,
+void Abstractor::select(Vec3f &abstractedPixel, const Vec3b &pixelOrigin, const Pixel &closestPixel,
                    std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const {
     const Point &coordinate = closestPixel.getCoordinate();
     const int index = coordinate.y * image->cols + coordinate.x;
 
-    bool selected = selectedIndices.count(index) == 0;
-    if (selected) {
-        abstractedPixel += (*image)(coordinate);
-        selectedIndices.insert(index);
-        add_neighborsToPossiblePixels(pixelOrigin, closestPixel, selectedIndices, possiblePixels);
-    }
-
-    return selected;
+    abstractedPixel += (*image)(coordinate);
+    selectedIndices.insert(index);
+    add_neighborsToPossiblePixels(pixelOrigin, closestPixel, selectedIndices, possiblePixels);
 }
 
 
