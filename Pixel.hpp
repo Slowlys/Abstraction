@@ -6,9 +6,11 @@ class Pixel
 {
 
 public:
-    Pixel(const cv::Point coordinate, float distanceFromOrigin);
+    Pixel(int row, int column, float distanceFromOrigin);
 
-    inline const cv::Point& getCoordinate() const { return coordinate; }
+    inline int getRow() const { return row; }
+    inline int getColumn() const { return column; }
+    inline bool asSameCoordinates (int theRow, int theColumn) const { return (theRow == row) && (theColumn == column); }
 
     inline float getDistanceFromOrigin() const { return distanceFromOrigin; }
 
@@ -21,9 +23,7 @@ private:
     /* Attributes */
     /*---------------*/
 
-    // coordinate y : row, coordinate x : column
-    cv::Point coordinate;
-
+    int row, column;
     float distanceFromOrigin;
 };
 

@@ -5,8 +5,9 @@ using namespace cv;
 
 
 
-Pixel::Pixel(const Point coordinate, float distanceFromOrigin) :
-    coordinate{coordinate},
+Pixel::Pixel(int row, int column, float distanceFromOrigin) :
+    row{row},
+    column{column},
     distanceFromOrigin{distanceFromOrigin}
 {
 }

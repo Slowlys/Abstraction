@@ -7,8 +7,8 @@ using namespace cv;
 
 struct _node
 {
-    _node (const Point coordinate, const float distanceFromOrigin) :
-        element{coordinate, distanceFromOrigin}
+    _node (int row, int column, const float distanceFromOrigin) :
+        element{row, column, distanceFromOrigin}
     {}
 
     _node *prev, *next;
@@ -18,7 +18,7 @@ struct _node
 
 //--------------------------------------------------
 
-DoubledLinkedList::DoubledLinkedList(unsigned int num_nodes_required) :
+DoubledLinkedList::DoubledLinkedList(uint num_nodes_required) :
     smallest{nullptr},
     num_nodes{0},
     num_nodes_required{num_nodes_required}
@@ -60,56 +60,54 @@ Pixel DoubledLinkedList::extractMin() {
 }
 
 
-void DoubledLinkedList::emplace(const cv::Point coordinate, float distanceFromOrigin) {
+void DoubledLinkedList::emplace(int row, int column, float distanceFromOrigin) {
     if (smallest == nullptr) {
-        smallest = new Node{coordinate, distanceFromOrigin};
+        smallest = new Node{row, column, distanceFromOrigin};
         smallest->next = smallest->prev = smallest;
         ++num_nodes;
     } else {
-        emplace_nonEmpty(coordinate, distanceFromOrigin);
+        emplace_nonEmpty(row, column, distanceFromOrigin);
     }
 }
 
 
-void DoubledLinkedList::emplace_nonEmpty(const cv::Point coordinate, float distanceFromOrigin) {
+void DoubledLinkedList::emplace_nonEmpty(int row, int column, float distanceFromOrigin) {
+    Node *founded = nullptr;
+    const bool pointAlreadyThere = pointIsAlreadyThere(row, column, &founded);
 
-    // Find out if the point is already there
-    Node *current = smallest;
-    bool point_alreadyThere = false;
-
-    do {
-        current = current->next;
-        point_alreadyThere = (current->element.getCoordinate() == coordinate);
-    } while ( (current != smallest) && (!point_alreadyThere) );
-
-    if (point_alreadyThere) {
-        if (current->element.getDistanceFromOrigin() > distanceFromOrigin) {
-            Node *new_node = new Node{coordinate, distanceFromOrigin};
-            insert_node(new_node);
-
-            // Suppress duplicated node
-            current->prev->next = current->next;
-            current->next->prev = current->prev;
-            delete current;
+    if (pointAlreadyThere) {
+        if (founded->element.getDistanceFromOrigin() > distanceFromOrigin) {
+            Node *new_node = new Node{row, column, distanceFromOrigin};
+            insert_node(new_node);          
+            delete_node(founded);
         }
     } else {
-        Node *new_node = new Node{coordinate, distanceFromOrigin};
+        Node *new_node = new Node{row, column, distanceFromOrigin};
 
         if (num_nodes >= num_nodes_required) {
             Node *max_node = smallest->prev;
             if (max_node->element > new_node->element) {
                 insert_node(new_node);
-
-                // Supress max node
-                max_node->prev->next = max_node->next;
-                max_node->next->prev = max_node->prev;
-                delete max_node;
+                delete_node(max_node);
             }
         } else {
             insert_node(new_node);
             ++num_nodes;
         }
     }
+}
+
+
+bool DoubledLinkedList::pointIsAlreadyThere (int row, int column, Node **founded) {
+    *founded = smallest;
+    bool point_alreadyThere = false;
+
+    do {
+        *founded = (*founded)->next;
+        point_alreadyThere = (*founded)->element.asSameCoordinates(row, column);
+    } while ( (*founded != smallest) && (!point_alreadyThere) );
+
+    return point_alreadyThere;
 }
 
 
@@ -129,6 +127,13 @@ void DoubledLinkedList::insert_node(Node *new_node) {
 
     current->next->prev = new_node;
     current->next = new_node;
+}
+
+
+void DoubledLinkedList::delete_node(Node *node) {
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+    delete node;
 }
 
 

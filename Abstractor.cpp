@@ -13,7 +13,7 @@ Abstractor::Abstractor() {
 
 }
 
-void Abstractor::init(const cv::Mat_<cv::Vec3b> *theImage) {
+void Abstractor::init(const Mat_<Vec3b> *theImage) {
     image = theImage;
 
     calculate_horizontalVertical_difference();
@@ -87,7 +87,9 @@ Vec3b Abstractor::abstractPixel (uint maskSize, int row, int column) const {
 
     // Add last pixel
     const Pixel closestPixel = possiblePixels.extractMin();
-    abstractedPixel += (*image)(closestPixel.getCoordinate());
+    const int lastRow = closestPixel.getRow();
+    const int lastColumn = closestPixel.getColumn();
+    abstractedPixel += (*image)(lastRow, lastColumn);
 
     return abstractedPixel / static_cast<float>(maskSize);
 }
@@ -99,23 +101,19 @@ void Abstractor::select_originalNeighBors(int row, int column,
     selectedIndices.insert(row * image->cols + column);
 
     if (row > 0) {
-        const Point coordinate{column, row - 1};
-        possiblePixels.emplace(coordinate, horizontal_difference(row - 1, column));
+        possiblePixels.emplace(row - 1, column, horizontal_difference(row - 1, column));
     }
 
     if (row < image->rows - 1) {
-        const Point coordinate{column, row + 1};
-        possiblePixels.emplace(coordinate, horizontal_difference(row, column));
+        possiblePixels.emplace(row + 1, column, horizontal_difference(row, column));
     }
 
     if (column > 0) {
-        const Point coordinate{column - 1, row};
-        possiblePixels.emplace(coordinate, vertical_difference(row, column - 1));
+        possiblePixels.emplace(row, column - 1, vertical_difference(row, column - 1));
     }
 
     if (column < image->cols - 1) {
-        const Point coordinate{column + 1, row};
-        possiblePixels.emplace(coordinate, vertical_difference(row, column));
+        possiblePixels.emplace(row, column + 1, vertical_difference(row, column));
     }
 }
 
@@ -123,10 +121,11 @@ void Abstractor::select_originalNeighBors(int row, int column,
 
 void Abstractor::select(Vec3f &abstractedPixel, const Vec3b &pixelOrigin, const Pixel &closestPixel,
                    std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const {
-    const Point &coordinate = closestPixel.getCoordinate();
-    const int index = coordinate.y * image->cols + coordinate.x;
+    const int row = closestPixel.getRow();
+    const int column = closestPixel.getColumn();
+    const int index = row * image->cols + column;
 
-    abstractedPixel += (*image)(coordinate);
+    abstractedPixel += (*image)(row, column);
     selectedIndices.insert(index);
     add_neighborsToPossiblePixels(pixelOrigin, closestPixel, selectedIndices, possiblePixels);
 }
@@ -136,44 +135,40 @@ void Abstractor::add_neighborsToPossiblePixels (const Vec3b &pixelOrigin, const 
                                                 const std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const {
     int index;
     const float distanceFromOrigin = closestPixel.getDistanceFromOrigin();
-    const Point &coordinate = closestPixel.getCoordinate();
-    int column = coordinate.x, row = coordinate.y;
+    const int column = closestPixel.getColumn();
+    const int row = closestPixel.getRow();
 
     index = (row - 1) * image->cols + column;
     if ((row > 0) && (selectedIndices.count(index) == 0)) {
-        const Point neighbor{column, row - 1};
-        const float distance = propagationDistance(pixelOrigin, neighbor, distanceFromOrigin,
+        const float distance = propagationDistance(pixelOrigin, row - 1, column, distanceFromOrigin,
                                                    horizontal_difference_scaled(row - 1, column));
-        possiblePixels.emplace_nonEmpty(neighbor, distance);
+        possiblePixels.emplace_nonEmpty(row - 1, column, distance);
     }
 
     index += 2 * image->cols;
     if ((row < image->rows - 1) && (selectedIndices.count(index) == 0)) {
-        const Point neighbor{column, row + 1};
-        const float distance = propagationDistance(pixelOrigin, neighbor, distanceFromOrigin,
+        const float distance = propagationDistance(pixelOrigin, row + 1, column, distanceFromOrigin,
                                                    horizontal_difference_scaled(row, column));
-        possiblePixels.emplace_nonEmpty(neighbor, distance);
+        possiblePixels.emplace_nonEmpty(row + 1, column, distance);
     }
 
     index = index - image->cols - 1;
     if ((column > 0) && (selectedIndices.count(index) == 0)) {
-        const Point neighbor{column - 1, row};
-        const float distance = propagationDistance(pixelOrigin, neighbor, distanceFromOrigin,
+        const float distance = propagationDistance(pixelOrigin, row, column - 1, distanceFromOrigin,
                                                    vertical_difference_scaled(row, column - 1));
-        possiblePixels.emplace_nonEmpty(neighbor, distance);
+        possiblePixels.emplace_nonEmpty(row, column - 1, distance);
     }
 
     index += 2;
     if ((column < image->cols - 1) && (selectedIndices.count(index) == 0)) {
-        const Point neighbor{column + 1, row};
-        const float distance = propagationDistance(pixelOrigin, neighbor, distanceFromOrigin,
+        const float distance = propagationDistance(pixelOrigin, row, column + 1, distanceFromOrigin,
                                                    vertical_difference_scaled(row, column));
-        possiblePixels.emplace_nonEmpty(neighbor, distance);
+        possiblePixels.emplace_nonEmpty(row, column + 1, distance);
     }
 }
 
 
-float Abstractor::propagationDistance(const Vec3b &pixelOrigin, const Point &neighbor,
+float Abstractor::propagationDistance(const Vec3b &pixelOrigin, int neighbor_row, int neighbor_column,
                                       float distanceFromOrigin, float neightbor_distance) const {
-    return distanceFromOrigin + Pixel::distanceBetween((*image)(neighbor), pixelOrigin) + neightbor_distance;
+    return distanceFromOrigin + Pixel::distanceBetween((*image)(neighbor_row, neighbor_column), pixelOrigin) + neightbor_distance;
 }

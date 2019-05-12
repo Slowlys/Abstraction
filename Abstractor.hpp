@@ -3,9 +3,6 @@
 #include <unordered_set>
 #include <queue>
 
-#include <opencv2/opencv.hpp>
-
-#include "PairingHeap.hpp"
 #include "DoubledLinkedList.hpp"
 
 #include "Pixel.hpp"
@@ -67,6 +64,6 @@ private:
     void add_neighborsToPossiblePixels (const cv::Vec3b &pixelOrigin, const Pixel &closestPixel,
                                         const std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;
 
-    float propagationDistance(const cv::Vec3b &pixelOrigin, const cv::Point &neighbor,
+    float propagationDistance(const cv::Vec3b &pixelOrigin, int neighbor_row, int neighbor_column,
                                           float distanceFromOrigin, float neightbor_distance) const;
 };

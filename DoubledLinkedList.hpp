@@ -5,12 +5,12 @@
 
 class DoubledLinkedList {
 public:
-    DoubledLinkedList(unsigned int num_nodes_required);
+    DoubledLinkedList(uint num_nodes_required);
 
     ~DoubledLinkedList();
 
-    void emplace(const cv::Point coordinate, float distanceFromOrigin);
-    void emplace_nonEmpty(const cv::Point coordinate, float distanceFromOrigin);
+    void emplace(int row, int column, float distanceFromOrigin);
+    void emplace_nonEmpty(int row, int column, float distanceFromOrigin);
 
     Pixel extractMin();
 
@@ -24,12 +24,14 @@ private:
     /*---------------*/
     Node *smallest;
 
-    unsigned int num_nodes;
-    unsigned int num_nodes_required;
+    uint num_nodes;
+    uint num_nodes_required;
 
     /*---------------*/
     /* Methods */
     /*---------------*/
 
     void insert_node(Node *new_node);
+    void delete_node(Node *node);
+    bool pointIsAlreadyThere(int row, int column, Node **founded);
 };
