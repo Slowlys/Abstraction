@@ -3,8 +3,8 @@
 #include <unordered_set>
 #include <queue>
 
-#include "DoubledLinkedList.hpp"
 #include "UnrolledLinkedList.hpp"
+#include "SortedArray.hpp"
 
 #include "Pixel.hpp"
 
@@ -20,8 +20,8 @@ private:
         }
     };
 public:
-    using PriorityPixels = UnrolledLinkedList;
-    //using PriorityPixels = DoubledLinkedList;
+    using PriorityPixels = SortedArray;
+    //using PriorityPixels = UnrolledLinkedList;
     //using PriorityPixels = std::priority_queue<Pixel&, std::vector<Pixel>, CloserThanPixel>;
 
     Abstractor();

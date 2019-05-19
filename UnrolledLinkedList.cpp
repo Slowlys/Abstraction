@@ -60,7 +60,7 @@ struct _node
         for (int i = num_elements - 1; i >= 0 && !insert_after; --i) {
             insert_after = distanceFromOrigin > array[i].getDistanceFromOrigin();
             if (!insert_after) {
-                array[i + 1] = array[i];
+                array[i + 1] = std::move(array[i]);
             } else {
                 index_newElement = i + 1;
             }
@@ -77,7 +77,7 @@ struct _node
         struct _node *new_node = new struct _node();
 
         for (uint index_toBeMoved = half_sizeArray; index_toBeMoved < size_array; ++index_toBeMoved) {
-            new_node->array[new_index++] = array[index_toBeMoved];
+            new_node->array[new_index++] = std::move(array[index_toBeMoved]);
         }
 
         new_node->num_elements = new_index;
@@ -103,7 +103,7 @@ struct _node
                 if (next->num_elements - 1 < half_sizeArray) {
                     // Merge this node with the next node
                     for (int i = 0; i < next->num_elements; ++i) {
-                        array[num_elements++] = next->array[i];
+                        array[num_elements++] = std::move(next->array[i]);
                     }
                     next->remove();
                 } else {
@@ -121,7 +121,7 @@ struct _node
 
     void crush(int index) {
         for (int i = index; i < num_elements - 1; ++i) {
-            array[i] = array[i + 1];
+            array[i] = std::move(array[i + 1]);
         }
         num_elements--;
     }

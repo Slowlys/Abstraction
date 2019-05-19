@@ -73,7 +73,7 @@ Mat_<Vec3b> Abstractor::abstract(uint maskSize, double gamma) {
 
 Vec3b Abstractor::abstractPixel (uint maskSize, int row, int column) const {
     unordered_set<int> selectedIndices;
-    PriorityPixels possiblePixels{maskSize - 1};
+    PriorityPixels possiblePixels{static_cast<int>(maskSize - 1)};
 
     const Vec3b &pixelOrigin = (*image)(row, column);
     Vec3f abstractedPixel = pixelOrigin;
@@ -142,28 +142,28 @@ void Abstractor::add_neighborsToPossiblePixels (const Vec3b &pixelOrigin, const 
     if ((row > 0) && (selectedIndices.count(index) == 0)) {
         const float distance = propagationDistance(pixelOrigin, row - 1, column, distanceFromOrigin,
                                                    horizontal_difference_scaled(row - 1, column));
-        possiblePixels.emplace_nonEmpty(row - 1, column, distance);
+        possiblePixels.emplace(row - 1, column, distance);
     }
 
     index += 2 * image->cols;
     if ((row < image->rows - 1) && (selectedIndices.count(index) == 0)) {
         const float distance = propagationDistance(pixelOrigin, row + 1, column, distanceFromOrigin,
                                                    horizontal_difference_scaled(row, column));
-        possiblePixels.emplace_nonEmpty(row + 1, column, distance);
+        possiblePixels.emplace(row + 1, column, distance);
     }
 
     index = index - image->cols - 1;
     if ((column > 0) && (selectedIndices.count(index) == 0)) {
         const float distance = propagationDistance(pixelOrigin, row, column - 1, distanceFromOrigin,
                                                    vertical_difference_scaled(row, column - 1));
-        possiblePixels.emplace_nonEmpty(row, column - 1, distance);
+        possiblePixels.emplace(row, column - 1, distance);
     }
 
     index += 2;
     if ((column < image->cols - 1) && (selectedIndices.count(index) == 0)) {
         const float distance = propagationDistance(pixelOrigin, row, column + 1, distanceFromOrigin,
                                                    vertical_difference_scaled(row, column));
-        possiblePixels.emplace_nonEmpty(row, column + 1, distance);
+        possiblePixels.emplace(row, column + 1, distance);
     }
 }
 
