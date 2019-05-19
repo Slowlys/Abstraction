@@ -1,4 +1,4 @@
-#include "DoubledLinkedList.hpp"
+  #include "DoubledLinkedList.hpp"
 
 
 using namespace cv;
@@ -72,14 +72,14 @@ void DoubledLinkedList::emplace(int row, int column, float distanceFromOrigin) {
 
 
 void DoubledLinkedList::emplace_nonEmpty(int row, int column, float distanceFromOrigin) {
-    Node *founded = nullptr;
-    const bool pointAlreadyThere = pointIsAlreadyThere(row, column, &founded);
+    Node *found = nullptr;
+    const bool pointAlreadyThere = pointIsAlreadyThere(row, column, &found);
 
     if (pointAlreadyThere) {
-        if (founded->element.getDistanceFromOrigin() > distanceFromOrigin) {
+        if (found->element.getDistanceFromOrigin() > distanceFromOrigin) {
             Node *new_node = new Node{row, column, distanceFromOrigin};
             insert_node(new_node);          
-            delete_node(founded);
+            delete_node(found);
         }
     } else {
         Node *new_node = new Node{row, column, distanceFromOrigin};
@@ -89,6 +89,8 @@ void DoubledLinkedList::emplace_nonEmpty(int row, int column, float distanceFrom
             if (max_node->element > new_node->element) {
                 insert_node(new_node);
                 delete_node(max_node);
+            } else {
+                delete new_node;
             }
         } else {
             insert_node(new_node);

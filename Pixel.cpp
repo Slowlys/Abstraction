@@ -5,11 +5,24 @@ using namespace cv;
 
 
 
-Pixel::Pixel(int row, int column, float distanceFromOrigin) :
-    row{row},
-    column{column},
-    distanceFromOrigin{distanceFromOrigin}
+Pixel::Pixel()
 {
+
+}
+
+Pixel::Pixel(int theRow, int theColumn, float theDistanceFromOrigin) :
+    row{theRow},
+    column{theColumn},
+    distanceFromOrigin{theDistanceFromOrigin}
+{
+
+}
+
+
+void Pixel::init(int theRow, int theColumn, float theDistanceFromOrigin) {
+    row = theRow;
+    column = theColumn;
+    distanceFromOrigin = theDistanceFromOrigin;
 }
 
 

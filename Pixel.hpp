@@ -6,7 +6,10 @@ class Pixel
 {
 
 public:
-    Pixel(int row, int column, float distanceFromOrigin);
+    Pixel();
+    Pixel(int theRow, int theColumn, float theDistanceFromOrigin);
+
+    void init(int theRow, int theColumn, float theDistanceFromOrigin);
 
     inline int getRow() const { return row; }
     inline int getColumn() const { return column; }

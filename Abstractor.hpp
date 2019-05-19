@@ -4,6 +4,7 @@
 #include <queue>
 
 #include "DoubledLinkedList.hpp"
+#include "UnrolledLinkedList.hpp"
 
 #include "Pixel.hpp"
 
@@ -19,7 +20,8 @@ private:
         }
     };
 public:
-    using PriorityPixels = DoubledLinkedList;
+    using PriorityPixels = UnrolledLinkedList;
+    //using PriorityPixels = DoubledLinkedList;
     //using PriorityPixels = std::priority_queue<Pixel&, std::vector<Pixel>, CloserThanPixel>;
 
     Abstractor();

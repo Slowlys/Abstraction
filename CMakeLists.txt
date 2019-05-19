@@ -13,6 +13,7 @@ include_directories( ${OpenCV_INCLUDE_DIRS} )
 set(SOURCE_FILES
     #PairingHeap.hpp PairingHeap.cpp
     DoubledLinkedList.hpp DoubledLinkedList.cpp
+	UnrolledLinkedList.hpp UnrolledLinkedList.cpp
     Pixel.hpp Pixel.cpp
     Abstractor.hpp Abstractor.cpp
     main.cpp
