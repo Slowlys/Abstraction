@@ -1,4 +1,4 @@
-#include "SortedArray.hpp"
+#include "SortedArray.h"
 
 #include <cstring>
 
@@ -7,7 +7,7 @@
 SortedArray::SortedArray(int num_elements_required) :
     num_elements{0},
     num_elements_required{num_elements_required},
-    elements{new Pixel[num_elements_required]}
+    elements{new Pixel[num_elements_required - (num_elements_required / 5)]}
 {
 
 }

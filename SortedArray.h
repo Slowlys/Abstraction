@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Pixel.hpp"
+#include "Pixel.h"
 
 class SortedArray {
 public:

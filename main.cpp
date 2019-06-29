@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 
-#include "Abstractor.hpp"
+#include "Abstractor.h"
 
 
 
@@ -24,7 +24,7 @@ void display_difference(const Mat_<ushort> &horizontal_difference, const Mat_<us
 
 
 int main() {
-    const char *image_path = "../images/lena.jpg";
+    const char *image_path = "../images/herisson.jpg";
     const char *window_name = "Abstraction";
     const char *output_path = "result.png";
     const uint maskSize = 100;
@@ -44,38 +44,77 @@ int main() {
     switch (num_channels) {
         case 1:
         {
-            MatIterator_<uchar> end = image.end<uchar>();
-            for (auto iterator = image.begin<uchar>(); iterator != end; ++iterator) {
-                *iterator = 0;
-            }
-
-            break;
-        }
-
-        case 3 :
-        {            
-            Mat_<Vec3b> image3d = image;
-
-            // Convert to HSV Space
-            Mat image_hsv;
-            image.convertTo(image_hsv, COLOR_BGR2HSV);
+            Mat_< Vec<unsigned char, 1> > image1d = image;
 
             // Let's begin
             double time = static_cast<double>(getTickCount());
 
-            Abstractor abstractor;
-            abstractor.init(&image3d);
-            const Mat_<Vec3b> abstracted_image = abstractor.abstract(maskSize, gamma);
+            Abstractor<1> abstractor;
+            abstractor.init(&image1d);
+            const Mat_< Vec<unsigned char, 1> > *abstracted_image = abstractor.abstract(maskSize, gamma);
 
             time = static_cast<double>(getTickCount()) - time;
             const double time_seconds = time / getTickFrequency();
             std::cout << "Seconds : " << time_seconds << std::endl;
 
-            imshow(window_name, abstracted_image);
+            imshow(window_name, *abstracted_image);
             waitKey(0);
 
-            imwrite(output_path, abstracted_image);
+            imwrite(output_path, *abstracted_image);
 
+            delete abstracted_image;
+            break;
+        }
+
+        case 3 :
+        {                       
+            // Convert to HSV Space
+            Mat image_hsv;
+            image.convertTo(image_hsv, COLOR_BGR2HSV);
+
+            Mat_<Vec3b> image3d = image;
+
+            // Let's begin
+            double time = static_cast<double>(getTickCount());
+
+            Abstractor<3> abstractor;
+            abstractor.init(&image3d);
+            const Mat_<Vec3b> *abstracted_image = abstractor.abstract(maskSize, gamma);
+
+            time = static_cast<double>(getTickCount()) - time;
+            const double time_seconds = time / getTickFrequency();
+            std::cout << "Seconds : " << time_seconds << std::endl;
+
+            imshow(window_name, *abstracted_image);
+            waitKey(0);
+
+            imwrite(output_path, *abstracted_image);
+
+            delete abstracted_image;
+            break;
+        }
+
+        case 4 :
+        {
+            Mat_<Vec4b> image4d = image;
+
+            // Let's begin
+            double time = static_cast<double>(getTickCount());
+
+            Abstractor<4> abstractor;
+            abstractor.init(&image4d);
+            const Mat_<Vec4b> *abstracted_image = abstractor.abstract(maskSize, gamma);
+
+            time = static_cast<double>(getTickCount()) - time;
+            const double time_seconds = time / getTickFrequency();
+            std::cout << "Seconds : " << time_seconds << std::endl;
+
+            imshow(window_name, *abstracted_image);
+            waitKey(0);
+
+            imwrite(output_path, *abstracted_image);
+
+            delete abstracted_image;
             break;
         }
     }

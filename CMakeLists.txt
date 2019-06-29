@@ -11,15 +11,13 @@ include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 # Add Sources
 set(SOURCE_FILES
-    #PairingHeap.hpp PairingHeap.cpp
-    #DoubledLinkedList.hpp DoubledLinkedList.cpp
-    UnrolledLinkedList.hpp UnrolledLinkedList.cpp
-    SortedArray.hpp SortedArray.cpp
-    Pixel.hpp Pixel.cpp
-    Abstractor.hpp Abstractor.cpp
+    SortedArray.h SortedArray.cpp
+    Pixel.h Pixel.cpp
+    Abstractor.h
     main.cpp
 )
 
 add_executable( ${PROJECT_NAME} ${SOURCE_FILES} )
 
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
+
