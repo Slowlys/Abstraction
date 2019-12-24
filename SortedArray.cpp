@@ -1,8 +1,5 @@
 #include "SortedArray.h"
 
-#include <cstring>
-
-
 
 SortedArray::SortedArray(int num_elements_required) :
     num_elements{0},

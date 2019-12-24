@@ -1,14 +1,10 @@
 #pragma once
 
 #include <unordered_set>
-#include <queue>
 
 #include "SortedArray.h"
 
-#include "Pixel.h"
 
-
-//TODO : template for Vec3b
 template<uint num_channels>
 class Abstractor : public cv::ParallelLoopBody
 {
@@ -21,7 +17,7 @@ public:
 
     void init(const cv::Mat_<VecNb> *image);
 
-    cv::Mat_< cv::Vec<unsigned char, num_channels> >* abstract(uint theMaskSize, double gamma);
+    cv::Mat_<cv::Vec<unsigned char, num_channels> > *abstract(uint theMaskSize, double gamma);
 
 private:
     using PriorityPixels = SortedArray;
@@ -63,7 +59,7 @@ private:
     /* Select Pixel */
 
     void select(cv::Vec<float, num_channels> &abstractedPixel, const VecNb &pixelOrigin, const Pixel &closestPixel,
-                std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;
+                std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels, float &variance, uint num_inMask) const;
 
     void add_neighborsToPossiblePixels (const VecNb &pixelOrigin, const Pixel &closestPixel,
                                         const std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;
