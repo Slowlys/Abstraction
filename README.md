@@ -75,7 +75,8 @@ To abstract an image,
 Please provide the path of this image with : `./Abstraction -image_path [image_path]`
 
 You can also provide other optional arguments :
-Usage : `./Abstraction -image_path [image_path] -output_path [output_path] -maskSize [maskSize] -gamma [gamma]`
+Usage :
+```./Abstraction -image_path [image_path] -output_path [output_path] -maskSize [maskSize] -gamma [gamma]```
 
 
 To display the usage message, you can execute the following commands :
@@ -100,14 +101,14 @@ The developpment of this project has stopped.
 
 [hedgehog]: ReadmeImages/hedgehog.jpg "Hedgehog"
 
-[hedgehog_m1]: ReadmeImages/hedgehog_m1.jpg "Abstracted hedgehog with maskSize = 1"
-[hedgehog_m20]: ReadmeImages/hedgehog_m20.jpg "Abstracted hedgehog with maskSize = 20"
-[hedgehog_m50]: ReadmeImages/hedgehog_m50.jpg "Abstracted hedgehog with maskSize = 50"
-[hedgehog_m500]: ReadmeImages/hedgehog_m500.jpg "Abstracted hedgehog with maskSize = 500"
+[hedgehog_m1]: ReadmeImages/hedgehog_m1.png "Abstracted hedgehog with maskSize = 1"
+[hedgehog_m20]: ReadmeImages/hedgehog_m20.png "Abstracted hedgehog with maskSize = 20"
+[hedgehog_m50]: ReadmeImages/hedgehog_m50.png "Abstracted hedgehog with maskSize = 50"
+[hedgehog_m500]: ReadmeImages/hedgehog_m500.png "Abstracted hedgehog with maskSize = 500"
 
-[hedgehog_g0]: ReadmeImages/hedgehog_g0.jpg "Abstracted hedgehog with gamma = 0.0"
-[hedgehog_g10]: ReadmeImages/hedgehog_g10.jpg "Abstracted hedgehog with gamma = 10.0"
-[hedgehog_g50]: ReadmeImages/hedgehog_g50.jpg "Abstracted hedgehog with gamma = 50.0"
+[hedgehog_g0]: ReadmeImages/hedgehog_g0.png "Abstracted hedgehog with gamma = 0.0"
+[hedgehog_g10]: ReadmeImages/hedgehog_g10.png "Abstracted hedgehog with gamma = 10.0"
+[hedgehog_g50]: ReadmeImages/hedgehog_g50.png "Abstracted hedgehog with gamma = 50.0"
 
 
 
