@@ -76,7 +76,9 @@ Please provide the path of this image with : `./Abstraction -image_path [image_p
 
 You can also provide other optional arguments :
 Usage :
-```./Abstraction -image_path [image_path] -output_path [output_path] -maskSize [maskSize] -gamma [gamma]```
+```
+./Abstraction -image_path [image_path] -output_path [output_path] -maskSize [maskSize] -gamma [gamma]
+```
 
 
 To display the usage message, you can execute the following commands :
@@ -101,14 +103,14 @@ The developpment of this project has stopped.
 
 [hedgehog]: ReadmeImages/hedgehog.jpg "Hedgehog"
 
-[hedgehog_m1]: ReadmeImages/hedgehog_m1.png "Abstracted hedgehog with maskSize = 1"
-[hedgehog_m20]: ReadmeImages/hedgehog_m20.png "Abstracted hedgehog with maskSize = 20"
-[hedgehog_m50]: ReadmeImages/hedgehog_m50.png "Abstracted hedgehog with maskSize = 50"
-[hedgehog_m500]: ReadmeImages/hedgehog_m500.png "Abstracted hedgehog with maskSize = 500"
+[hedgehog_m1]: ReadmeImages/abstractedHedgeHog_m1.png "Abstracted hedgehog with maskSize = 1"
+[hedgehog_m20]: ReadmeImages/abstractedHedgeHog_m20.png "Abstracted hedgehog with maskSize = 20"
+[hedgehog_m50]: ReadmeImages/abstractedHedgeHog_m50.png "Abstracted hedgehog with maskSize = 50"
+[hedgehog_m500]: ReadmeImages/abstractedHedgeHog_m500.png "Abstracted hedgehog with maskSize = 500"
 
-[hedgehog_g0]: ReadmeImages/hedgehog_g0.png "Abstracted hedgehog with gamma = 0.0"
-[hedgehog_g10]: ReadmeImages/hedgehog_g10.png "Abstracted hedgehog with gamma = 10.0"
-[hedgehog_g50]: ReadmeImages/hedgehog_g50.png "Abstracted hedgehog with gamma = 50.0"
+[hedgehog_g0]: ReadmeImages/abstractedHedgeHog_g0.png "Abstracted hedgehog with gamma = 0.0"
+[hedgehog_g10]: ReadmeImages/abstractedHedgeHog_g10.png "Abstracted hedgehog with gamma = 10.0"
+[hedgehog_g50]: ReadmeImages/abstractedHedgeHog_g50.png "Abstracted hedgehog with gamma = 50.0"
 
 
 
