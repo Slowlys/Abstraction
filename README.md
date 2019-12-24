@@ -2,6 +2,7 @@
 
 ## Description
 This application abstracts an image taken as input.
+
 Exemple :
 
 ![Cat][exemple]
@@ -112,6 +113,7 @@ The developpment of this project has stopped.
 [hedgehog_m1]: ReadmeImages/abstractedHedgeHog_m1.png "Abstracted hedgehog with maskSize = 1"
 [hedgehog_m20]: ReadmeImages/abstractedHedgeHog_m20.png "Abstracted hedgehog with maskSize = 20"
 [hedgehog_m50]: ReadmeImages/abstractedHedgeHog_m50.png "Abstracted hedgehog with maskSize = 50"
+[hedgehog_m100]: ReadmeImages/abstractedHedgeHog_m100.png "Abstracted hedgehog with maskSize = 100"
 [hedgehog_m500]: ReadmeImages/abstractedHedgeHog_m500.png "Abstracted hedgehog with maskSize = 500"
 
 [hedgehog_g0]: ReadmeImages/abstractedHedgeHog_g0.png "Abstracted hedgehog with gamma = 0.0"
