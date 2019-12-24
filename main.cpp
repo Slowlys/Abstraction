@@ -23,9 +23,6 @@ void abstract (Abstractor<num_channels> &abstractor, const Mat_< Vec<unsigned ch
     const double time_seconds = time / getTickFrequency();
     std::cout << "Seconds : " << time_seconds << std::endl;
 
-    imshow("Abstraction", *abstracted_image);
-    waitKey(0);
-
     imwrite(output_path, *abstracted_image);
 }
 

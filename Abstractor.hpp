@@ -114,7 +114,6 @@ Vec<unsigned char, num_channels> Abstractor<num_channels>::abstractPixel (uint m
     PriorityPixels possiblePixels{static_cast<int>(maskSize - 1)};
     float variance = 0.0f;
 
-
     const VecNb &pixelOrigin = (*image)(row, column);
     Vec<float, num_channels> abstractedPixel = pixelOrigin;
 
@@ -126,11 +125,6 @@ Vec<unsigned char, num_channels> Abstractor<num_channels>::abstractPixel (uint m
         select(abstractedPixel, pixelOrigin, closestPixel, selectedIndices, possiblePixels, variance, i + 1);
     }
 
-//    float additionToVariance1 = 0.0f;
-//    for (int i = 0; i <num_channels; ++i) {
-//        additionToVariance1 += (*image)(row, column)[i] - (abstractedPixel[i] / (maskSize - 1));
-//    }
-
     // Add last pixel
     if (variance / i > 10.0) {
         const Pixel closestPixel = possiblePixels.extractMin();
@@ -139,14 +133,6 @@ Vec<unsigned char, num_channels> Abstractor<num_channels>::abstractPixel (uint m
         abstractedPixel += (*image)(lastRow, lastColumn);
         ++i;
     }
-
-//    float additionToVariance2 = 0.0f;
-//    for (int i = 0; i <num_channels; ++i) {
-//        additionToVariance2 += (*image)(row, column)[i] - (abstractedPixel[i] / maskSize);
-//    }
-
-//    variance += additionToVariance1 * additionToVariance2;
-//    variance = variance / (maskSize - 1);
 
     return abstractedPixel / static_cast<float>(i);
 }

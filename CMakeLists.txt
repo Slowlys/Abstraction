@@ -15,7 +15,7 @@ include_directories( ${OpenCV_INCLUDE_DIRS} )
 set(SOURCE_FILES
     SortedArray.h SortedArray.cpp
     Pixel.h Pixel.cpp
-    Abstractor.h
+    Abstractor.h Abstractor.hpp
     main.cpp
 )
 

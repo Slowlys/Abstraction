@@ -21,9 +21,6 @@ Pixel SortedArray::extractMin() {
     delete_element(0);
     --num_elements_required;
 
-//    std::cout << "Extract : " << *this << std::endl;
-//    cv::waitKey(100);
-
     return minimum;
 }
 
@@ -37,8 +34,6 @@ void SortedArray::emplace (int row, int column, float distanceFromOrigin) {
             delete_element(index_duplicate);
             insert_element(row, column,distanceFromOrigin);
         }
-
-        //std::cout << "** Duplicate ** " << std::endl;
     } else {
         if (num_elements >= num_elements_required) {
             if (elements[num_elements - 1].getDistanceFromOrigin() > distanceFromOrigin) {
@@ -49,9 +44,6 @@ void SortedArray::emplace (int row, int column, float distanceFromOrigin) {
             insert_element(row, column,distanceFromOrigin);
         }
     }
-
-//    std::cout << "Insert : " << *this << std::endl;
-//    cv::waitKey(100);
 }
 
 
