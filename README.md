@@ -75,6 +75,7 @@ With *abstraction_directory* being the directory of this application, where the 
 ### Requirements
 
 This application was only tested on Linux.
+
 It requires the Opencv2 library.
 
 ## Usage
@@ -83,7 +84,8 @@ To abstract an image,
 Please provide the path of this image with : `./Abstraction -image_path [image_path]`
 
 You can also provide other optional arguments :
-Usage :\
+Usage :
+
 `./Abstraction -image_path [image_path] -output_path [output_path] -maskSize [maskSize] -gamma [gamma]`
 
 
