@@ -29,26 +29,33 @@ The default value is 100 for *maskSize* and 1.0 for *gamma* :
 ### Influence of maskSize
 
 With maskSize = 1 :\
+
 ![abstracted hedgehog with maskSize = 1 and gamma = 1.0][hedgehog_m1]
 
 With maskSize = 20 :\
+
 ![abstracted hedgehog with maskSize = 20 and gamma = 1.0][hedgehog_m20]
 
 With maskSize = 50 :\
+
 ![abstracted hedgehog with maskSize = 50 and gamma = 1.0][hedgehog_m50]
 
 With maskSize = 500 :\
+
 ![abstracted hedgehog with maskSize = 500 and gamma = 1.0][hedgehog_m500]
 
 ### Influence of gamma
 
 With gamma = 0.0 :\
+
 ![abstracted hedgehog with maskSize = 100 and gamma = 0.0][hedgehog_g0]
 
 With gamma = 10.0 :\
+
 ![abstracted hedgehog with maskSize = 100 and gamma = 10.0][hedgehog_g10]
 
 With gamma = 50.0 :\
+
 ![abstracted hedgehog with maskSize = 100 and gamma = 50.0][hedgehog_g50]
 
 ## How to Install
