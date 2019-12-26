@@ -107,7 +107,6 @@ void Abstractor<4>::operator()(const cv::Range &range) const {
 }
 
 
-
 template<uint num_channels>
 Vec<unsigned char, num_channels> Abstractor<num_channels>::abstractPixel (uint maskSize, int row, int column) const {
     unordered_set<int> selectedIndices;

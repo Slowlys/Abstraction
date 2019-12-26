@@ -3,7 +3,7 @@
 ## Description
 This application abstracts an image taken as input.
 
-Exemple :
+Example :
 
 ![Cat][exemple]
 ![abstracted Cat][abstractedExemple]
@@ -17,6 +17,7 @@ This application can abstract grey images, color images, as well as images with 
 ## Exploration of the parameters
 
 Two parameters influence the resulting abstracted image : *gamma* and *maskSize*.
+
 *maskSize* is an integer and *gamma* is a float.
 
 To show the role of this parameters, this image will be abstracted with different values of them.
@@ -62,6 +63,7 @@ With gamma = 50.0 :
 ## How to Install
 
 First, create a directory called for exemple *build*
+
 Then, open a terminal and execute the following commands :
 
 ```

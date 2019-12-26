@@ -2,9 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 
-class Pixel
-{
-
+class Pixel {
 public:
     Pixel();
 
