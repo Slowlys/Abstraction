@@ -59,7 +59,7 @@ private:
     /* Select Pixel */
 
     void select(cv::Vec<float, num_channels> &abstractedPixel, const VecNb &pixelOrigin, const Pixel &closestPixel,
-                std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels, float &variance, uint num_inMask) const;
+                std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;
 
     void add_neighborsToPossiblePixels (const VecNb &pixelOrigin, const Pixel &closestPixel,
                                         const std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const;

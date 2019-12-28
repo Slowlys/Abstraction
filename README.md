@@ -30,9 +30,9 @@ The default value is 100 for *maskSize* and 1.0 for *gamma* :
 
 ### Influence of maskSize
 
-With maskSize = 1 :
+With maskSize = 2 :
 
-![abstracted hedgehog with maskSize = 1 and gamma = 1.0][hedgehog_m1]
+![abstracted hedgehog with maskSize = 2 and gamma = 1.0][hedgehog_m2]
 
 With maskSize = 20 :
 
@@ -114,7 +114,7 @@ The developpment of this project has stopped.
 
 [hedgehog]: ReadmeImages/hedgehog.jpg "Hedgehog"
 
-[hedgehog_m1]: ReadmeImages/abstractedHedgeHog_m1.png "Abstracted hedgehog with maskSize = 1"
+[hedgehog_m2]: ReadmeImages/abstractedHedgeHog_m2.png "Abstracted hedgehog with maskSize = 2"
 [hedgehog_m20]: ReadmeImages/abstractedHedgeHog_m20.png "Abstracted hedgehog with maskSize = 20"
 [hedgehog_m50]: ReadmeImages/abstractedHedgeHog_m50.png "Abstracted hedgehog with maskSize = 50"
 [hedgehog_m100]: ReadmeImages/abstractedHedgeHog_m100.png "Abstracted hedgehog with maskSize = 100"

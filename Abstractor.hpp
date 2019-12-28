@@ -111,29 +111,24 @@ template<uint num_channels>
 Vec<unsigned char, num_channels> Abstractor<num_channels>::abstractPixel (uint maskSize, int row, int column) const {
     unordered_set<int> selectedIndices;
     PriorityPixels possiblePixels{static_cast<int>(maskSize - 1)};
-    float variance = 0.0f;
 
     const VecNb &pixelOrigin = (*image)(row, column);
     Vec<float, num_channels> abstractedPixel = pixelOrigin;
 
     select_originalNeighBors(row, column, selectedIndices, possiblePixels);
 
-    uint i;
-    for (i = 1; (i < maskSize - 1) && (i < 10 ||(variance / i > 10.0)); ++i) {
+    for (uint i = 1; i < maskSize - 1 ; ++i) {
         const Pixel closestPixel = possiblePixels.extractMin();
-        select(abstractedPixel, pixelOrigin, closestPixel, selectedIndices, possiblePixels, variance, i + 1);
+        select(abstractedPixel, pixelOrigin, closestPixel, selectedIndices, possiblePixels);
     }
 
     // Add last pixel
-    if (variance / i > 10.0) {
-        const Pixel closestPixel = possiblePixels.extractMin();
-        const int lastRow = closestPixel.getRow();
-        const int lastColumn = closestPixel.getColumn();
-        abstractedPixel += (*image)(lastRow, lastColumn);
-        ++i;
-    }
+    const Pixel closestPixel = possiblePixels.extractMin();
+    const int lastRow = closestPixel.getRow();
+    const int lastColumn = closestPixel.getColumn();
+    abstractedPixel += (*image)(lastRow, lastColumn);
 
-    return abstractedPixel / static_cast<float>(i);
+    return abstractedPixel / static_cast<float>(maskSize);
 }
 
 
@@ -164,25 +159,12 @@ void Abstractor<num_channels>::select_originalNeighBors(int row, int column,
 
 template<uint num_channels>
 void Abstractor<num_channels>::select(Vec<float, num_channels> &abstractedPixel, const VecNb &pixelOrigin, const Pixel &closestPixel,
-                   std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels, float &variance, uint num_inMask) const {
+                   std::unordered_set<int> &selectedIndices, PriorityPixels &possiblePixels) const {
     const int row = closestPixel.getRow();
     const int column = closestPixel.getColumn();
     const int index = row * image->cols + column;
 
-    float additionToVariance1 = 0.0f;
-    for (int i = 0; i <num_channels; ++i) {
-        additionToVariance1 += (*image)(row, column)[i] - (abstractedPixel[i] / (num_inMask - 1));
-    }
-
-
     abstractedPixel += (*image)(row, column);
-
-    float additionToVariance2 = 0.0f;
-    for (int i = 0; i <num_channels; ++i) {
-        additionToVariance2 += (*image)(row, column)[i] - (abstractedPixel[i] / num_inMask);
-    }
-
-    variance += additionToVariance1 * additionToVariance2;
 
     selectedIndices.insert(index);
     add_neighborsToPossiblePixels(pixelOrigin, closestPixel, selectedIndices, possiblePixels);
